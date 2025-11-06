@@ -1,55 +1,53 @@
-Sistema web completo para gestão de ordens de serviço, vendas, revendedores, clientes, controle financeiro, PDV, automação de WhatsApp, emissão fiscal (NF-e e NFC-e), com interface moderna e responsiva, utilizando PHP (Laravel) + MySQL.
-Tecnologias
-Back-end: PHP moderno com Laravel
-Front-end: Blade com Bootstrap/Vue.js (responsivo)
-Banco de dados: MySQL
-Integrações externas: WhatsApp API, Sefaz (NFC-e/NF-e), SMTP
-Hospedagem: Hostinger
-Gestão de Usuários e Permissões
-Perfis: Administrador, Vendedor, Técnico, Financeiro
-Painel de permissões: acesso restrito por perfil, limite de desconto configurável por usuário
-Clientes e Revendedores
-Cadastro de: Clientes comuns, Revendedores, Empresas
-Empresas podem ser associadas a revendedores
-Histórico de OS, vendas e faturamento
-Produtos e Serviços
-Produtos: varejo/atacado, estoque, categoria
-Serviços: cadastro separado, adição em OS e PDV
-Ordem de Serviço (OS)
-Equipamentos: notebook, PC, celular, monitor etc.
-Check-list por tipo
-Produtos e serviços adicionáveis
-Assinatura digital do cliente
-Impressão em 2 vias (A4) e cupom não fiscal
-WhatsApp automático por status
-Faturamento parcial (contas a receber)
-Busca por cliente para faturamento
-Formas de pagamento combinadas
-Emissão de NFC-e
-PDV (Ponto de Venda)
-Busca por cliente: revendedor ou comum
-Preço dinâmico: atacado/varejo
-Desconto conforme permissão
-Formas de pagamento múltiplas
-Orçamento sem baixa no estoque (expira em 3 dias)
-Cupom fiscal e não fiscal
-Financeiro
-Contas a Receber:
-- Lançamento automático via OS/vendas
-- Parcelamento, filtros, notificações
-Contas a Pagar:
-- Manual e recorrente, categorização, relatórios
-Relatórios financeiros e operacionais
-Exportação para PDF e Excel
-Extras & Sugestões Profissionais
-Segurança: criptografia, logs, backups
-Inteligência de negócio: alertas, KPIs
-Agendamento de serviços
-Controle de garantia por OS/produto
-Entregáveis
-Sistema completo em Laravel + MySQL
-Instalador e documentação técnica
-Manual para o administrador
-API documentada (se necessário)
-Suporte para atualizações futuras
-recrie este sistema, e melhore para mim! 
+# Homstech V4 — Starter
+
+Base inicial para o repositório **homstechv4**. Este starter não é o código do framework em si, 
+mas um *esqueleto* com documentação, governança de repositório e configuração mínima para você
+começar e permitir que o Codex/ChatGPT faça *commits/PRs*.
+
+> Recomendado: use **Laravel 11**, **PHP 8.2+**, **MySQL 8** (ou MariaDB 10.6+).
+
+## Como usar
+
+1. Faça o primeiro commit com estes arquivos:
+   ```bash
+   git init
+   git add .
+   git commit -m "chore: starter repo (docs + config)"
+   git branch -M main
+   git remote add origin https://github.com/xIuris/homstechv4.git
+   git push -u origin main
+   ```
+
+2. Depois, gere um projeto Laravel (localmente ou via Codex) e mova os arquivos para dentro do repo:
+   ```bash
+   composer create-project laravel/laravel app
+   # ou use o diretório raiz e copie / configure conforme preferir
+   ```
+
+3. Copie `.env.example` para `.env` e ajuste credenciais:
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+4. (Opcional) Suba com Docker:
+   ```bash
+   docker compose up -d
+   ```
+
+## Estrutura
+- `docs/` — arquitetura, roadmap, contribuição e segurança
+- `.github/` — templates de issue/PR
+- `docker-compose.yml` — ambiente simples (app + db) para desenvolvimento
+- `.editorconfig`, `.gitattributes`, `.gitignore` — qualidade e padronização
+- `LICENSE` — MIT
+
+## Próximos passos sugeridos
+- Ler `docs/ROADMAP.md` e quebrar em issues
+- Criar a pasta `app/` do Laravel ou adicionar o monorepo com `src/`
+- Configurar CI (GitHub Actions) para testes e lint
+- Habilitar ambiente de staging na sua hospedagem
+
+---
+
+© 2025 Homstech Informática — MIT License.
