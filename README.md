@@ -12,6 +12,12 @@ Plataforma SaaS construída com Laravel 11 para gestão de ordens de serviço, P
 
 ## Configuração inicial
 
+### Instalador web (recomendado)
+1. Suba o projeto localmente com `composer install` e `php artisan serve`.
+2. Acesse `http://localhost:8000/install` e preencha os dados de aplicação, banco MySQL e o usuário Administrador.
+3. O instalador verifica requisitos, testa conexão, gera `APP_KEY`, grava `.env`, executa migrations/seeders e cria o admin informado.
+
+### Configuração manual
 1. Copie o arquivo de exemplo do ambiente:
    ```bash
    cp .env.example .env
@@ -66,6 +72,7 @@ Senhas padrão: `password` (alterar após o primeiro acesso).
 - `GET /products` — CRUD completo de produtos (RBAC `manage products`)
 - `GET /services` — CRUD completo de serviços (RBAC `manage services`)
 - `GET /fiscal-documents` — status e reimpressão de documentos fiscais simulados (RBAC `manage integrations`)
+- `GET /install` — instalador web (disponível apenas quando `APP_INSTALLED=false`)
 
 Use o usuário administrador (`admin@homstech.test` / `password`) para autenticar nas rotas protegidas ou associe permissões específicas aos demais perfis.
 
@@ -89,13 +96,20 @@ Principais variáveis do `.env`:
 | Variável | Descrição |
 | --- | --- |
 | `APP_NAME` | Nome da aplicação exibido nas respostas |
-| `APP_ENV`, `APP_DEBUG` | Ambiente e modo de depuração |
+| `APP_ENV`, `APP_DEBUG`, `APP_INSTALLED` | Ambiente, modo de depuração e flag de instalação |
+| `GLOBAL_RATE_LIMIT` | Limite global de requisições por minuto (throttle padrão) |
+| `UPLOAD_MAX_MB` | Tamanho máximo de upload (responde 413 acima do limite) |
 | `DB_CONNECTION`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` | Configuração do MySQL |
 | `CACHE_STORE`, `QUEUE_CONNECTION`, `SESSION_DRIVER` | Drivers padrão para cache, fila e sessão |
 | `MAIL_*` | Configuração do transporte de e-mails |
 | `SANCTUM_STATEFUL_DOMAINS`, `SESSION_DOMAIN` | Domínios confiáveis para autenticação baseada em cookie |
 | `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_ID`, `WHATSAPP_BASE_URL`, `WHATSAPP_RETRIES`, `WHATSAPP_BACKOFF` | Credenciais da Cloud API e parâmetros de retry/log para envio de mensagens |
 | `FISCAL_DRIVER` | Driver de emissão fiscal (mock padrão) |
+
+## Documentação complementar
+- [Manual do Administrador](docs/ADMIN_GUIDE.md)
+- [Troubleshooting](docs/TROUBLESHOOTING.md)
+- [Guia de Atualização](docs/UPGRADE.md)
 
 ## Contribuição
 

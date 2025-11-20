@@ -5,6 +5,7 @@ use App\Http\Controllers\AccountReceivableController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\FiscalDocumentController;
+use App\Http\Controllers\InstallerController;
 use App\Http\Controllers\InsightController;
 use App\Http\Controllers\PosController;
 use App\Http\Controllers\ProductController;
@@ -14,6 +15,11 @@ use App\Http\Controllers\WarrantyController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
+
+Route::middleware('not_installed')->group(function () {
+    Route::get('/install', [InstallerController::class, 'index'])->name('install.index');
+    Route::post('/install', [InstallerController::class, 'store'])->name('install.store');
+});
 
 Route::middleware(['auth.basic', 'permission:view platform status'])->get('/status', function () {
     return response()->json([
