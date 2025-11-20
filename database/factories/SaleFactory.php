@@ -23,11 +23,19 @@ class SaleFactory extends Factory
             'customer_id' => Customer::factory(),
             'reseller_id' => null,
             'user_id' => User::factory(),
+ codex/create-laravel-11-project-with-base-routes-00l5fh
             'status' => 'quotation',
             'subtotal' => fake()->randomFloat(2, 100, 5000),
             'discount_total' => fake()->randomFloat(2, 0, 500),
             'total' => fake()->randomFloat(2, 100, 5000),
             'sold_at' => null,
+=======
+            'status' => fake()->randomElement(['draft', 'confirmed', 'invoiced']),
+            'subtotal' => fake()->randomFloat(2, 100, 5000),
+            'discount_total' => fake()->randomFloat(2, 0, 500),
+            'total' => fake()->randomFloat(2, 100, 5000),
+            'sold_at' => now(),
+ main
         ];
     }
 

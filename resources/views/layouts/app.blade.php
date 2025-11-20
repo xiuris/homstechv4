@@ -18,7 +18,10 @@
                 <li class="nav-item"><a class="nav-link" href="{{ route('customers.index') }}">Clientes</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('products.index') }}">Produtos</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('services.index') }}">Serviços</a></li>
+ codex/create-laravel-11-project-with-base-routes-00l5fh
                 <li class="nav-item"><a class="nav-link" href="{{ route('pos.create') }}">PDV</a></li>
+=======
+ main
             </ul>
         </div>
     </div>
@@ -42,6 +45,9 @@
     @yield('content')
 </main>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+ codex/create-laravel-11-project-with-base-routes-00l5fh
 @stack('scripts')
+=======
+ main
 </body>
 </html>

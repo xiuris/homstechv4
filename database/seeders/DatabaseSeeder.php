@@ -38,7 +38,10 @@ class DatabaseSeeder extends Seeder
                 'manage services',
                 'manage order services',
                 'manage sales',
+ codex/create-laravel-11-project-with-base-routes-00l5fh
                 'apply sale discount',
+=======
+ main
                 'manage finances',
                 'manage warranties',
                 'manage stock',
@@ -55,7 +58,10 @@ class DatabaseSeeder extends Seeder
                     'manage products',
                     'manage services',
                     'manage sales',
+ codex/create-laravel-11-project-with-base-routes-00l5fh
                     'apply sale discount',
+=======
+ main
                 ],
                 'Técnico' => [
                     'view platform status',
@@ -67,7 +73,10 @@ class DatabaseSeeder extends Seeder
                     'view platform status',
                     'manage finances',
                     'manage customers',
+ codex/create-laravel-11-project-with-base-routes-00l5fh
                     'apply sale discount',
+=======
+ main
                 ],
             ])->map(function (array $permissionNames, string $roleName) {
                 $role = Role::firstOrCreate([
