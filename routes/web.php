@@ -2,12 +2,15 @@
 
 use App\Http\Controllers\AccountPayableController;
 use App\Http\Controllers\AccountReceivableController;
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\FiscalDocumentController;
+use App\Http\Controllers\InsightController;
 use App\Http\Controllers\PosController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\WarrantyController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
@@ -24,6 +27,10 @@ Route::middleware(['auth.basic'])->group(function () {
     Route::resource('customers', CustomerController::class)->middleware('permission:manage customers');
     Route::resource('products', ProductController::class)->middleware('permission:manage products');
     Route::resource('services', ServiceController::class)->middleware('permission:manage services');
+    Route::resource('warranties', WarrantyController::class)->only(['index', 'create', 'store'])->middleware('permission:manage warranties');
+    Route::resource('appointments', AppointmentController::class)->only(['index', 'create', 'store', 'update'])->middleware('permission:manage scheduling');
+    Route::get('insights', [InsightController::class, 'index'])->name('insights.index')->middleware('permission:manage alerts');
+    Route::post('insights', [InsightController::class, 'store'])->name('insights.store')->middleware('permission:manage alerts');
     Route::resource('receivables', AccountReceivableController::class)->only(['index', 'create', 'store'])->middleware('permission:manage finances');
     Route::resource('payables', AccountPayableController::class)->only(['index', 'create', 'store'])->middleware('permission:manage finances');
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index')->middleware('permission:manage finances');

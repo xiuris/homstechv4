@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Models\AccountPayable;
 use App\Models\AccountReceivable;
+use App\Models\Alert;
+use App\Models\Appointment;
 use App\Models\Customer;
 use App\Models\FiscalDocument;
 use App\Models\OrderService;
@@ -14,6 +16,8 @@ use App\Models\StockMovement;
 use App\Models\Warranty;
 use App\Policies\AccountPayablePolicy;
 use App\Policies\AccountReceivablePolicy;
+use App\Policies\AlertPolicy;
+use App\Policies\AppointmentPolicy;
 use App\Policies\CustomerPolicy;
 use App\Policies\FiscalDocumentPolicy;
 use App\Policies\OrderServicePolicy;
@@ -32,6 +36,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
+        Alert::class => AlertPolicy::class,
+        Appointment::class => AppointmentPolicy::class,
         Customer::class => CustomerPolicy::class,
         Product::class => ProductPolicy::class,
         Service::class => ServicePolicy::class,

@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\AccountPayable;
 use App\Models\AccountReceivable;
+use App\Models\Alert;
+use App\Models\Appointment;
 use App\Models\Company;
 use App\Models\Customer;
 use App\Models\FiscalDocument;
@@ -44,6 +46,8 @@ class DatabaseSeeder extends Seeder
                 'manage integrations',
                 'manage warranties',
                 'manage stock',
+                'manage alerts',
+                'manage scheduling',
             ])->map(fn (string $name) => Permission::firstOrCreate([
                 'name' => $name,
                 'guard_name' => 'web',
@@ -64,6 +68,7 @@ class DatabaseSeeder extends Seeder
                     'view platform status',
                     'manage customers',
                     'manage order services',
+                    'manage scheduling',
                     'manage warranties',
                 ],
                 'Financeiro' => [
@@ -72,6 +77,7 @@ class DatabaseSeeder extends Seeder
                     'manage customers',
                     'apply sale discount',
                     'manage integrations',
+                    'manage alerts',
                 ],
             ])->map(function (array $permissionNames, string $roleName) {
                 $role = Role::firstOrCreate([
@@ -306,6 +312,8 @@ class DatabaseSeeder extends Seeder
                 return $user;
             });
 
+            $technicians = $users->filter(fn (User $user) => $user->hasRole('Técnico'))->values();
+
             foreach ($products as $product) {
                 StockMovement::updateOrCreate(
                     [
@@ -484,6 +492,22 @@ class DatabaseSeeder extends Seeder
                     $warranty + ['company_id' => $company->id]
                 );
             }
+
+            Alert::updateOrCreate(
+                ['company_id' => $company->id, 'type' => 'os_stale'],
+                ['threshold_days' => 3, 'is_active' => true]
+            );
+
+            \App\Models\Appointment::factory()->create([
+                'company_id' => $company->id,
+                'customer_id' => $customers[0]->id,
+                'order_service_id' => $orderServices[0]->id,
+                'technician_id' => $technicians[0]->id,
+                'starts_at' => now()->addDay(),
+                'ends_at' => now()->addDay()->addHour(),
+                'status' => 'scheduled',
+                'is_blocked' => false,
+            ]);
 
             FiscalDocument::updateOrCreate(
                 [
