@@ -5,27 +5,28 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-class Service extends Model
+class AccountPayable extends Model
 {
-    /** @use HasFactory<\Database\Factories\ServiceFactory> */
+    /** @use HasFactory<\Database\Factories\AccountPayableFactory> */
     use HasFactory;
+
+    protected $table = 'accounts_payable';
 
     protected $fillable = [
         'company_id',
-        'name',
-        'category',
-        'description',
-        'price',
-        'duration_minutes',
-        'is_active',
+        'reseller_id',
+        'vendor_name',
+        'amount',
+        'due_date',
+        'status',
+        'notes',
     ];
 
     protected $casts = [
-        'price' => 'decimal:2',
-        'is_active' => 'boolean',
+        'amount' => 'decimal:2',
+        'due_date' => 'date',
     ];
 
     public function company(): BelongsTo
@@ -33,9 +34,9 @@ class Service extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function warranties(): HasMany
+    public function reseller(): BelongsTo
     {
-        return $this->hasMany(Warranty::class);
+        return $this->belongsTo(Reseller::class);
     }
 
     public function payments(): MorphMany

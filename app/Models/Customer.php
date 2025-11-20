@@ -8,28 +8,24 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-class Product extends Model
+class Customer extends Model
 {
-    /** @use HasFactory<\Database\Factories\ProductFactory> */
+    /** @use HasFactory<\Database\Factories\CustomerFactory> */
     use HasFactory;
 
     protected $fillable = [
         'company_id',
+        'reseller_id',
         'name',
-        'sku',
-        'category',
-        'description',
-        'retail_price',
-        'wholesale_price',
-        'stock',
-        'stock_minimum',
-        'is_active',
-    ];
-
-    protected $casts = [
-        'retail_price' => 'decimal:2',
-        'wholesale_price' => 'decimal:2',
-        'is_active' => 'boolean',
+        'document',
+        'email',
+        'phone',
+        'mobile_phone',
+        'state',
+        'city',
+        'zip_code',
+        'address',
+        'notes',
     ];
 
     public function company(): BelongsTo
@@ -37,9 +33,24 @@ class Product extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function stockMovements(): HasMany
+    public function reseller(): BelongsTo
     {
-        return $this->hasMany(StockMovement::class);
+        return $this->belongsTo(Reseller::class);
+    }
+
+    public function orderServices(): HasMany
+    {
+        return $this->hasMany(OrderService::class);
+    }
+
+    public function sales(): HasMany
+    {
+        return $this->hasMany(Sale::class);
+    }
+
+    public function accountsReceivable(): HasMany
+    {
+        return $this->hasMany(AccountReceivable::class);
     }
 
     public function warranties(): HasMany

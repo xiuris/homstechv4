@@ -1,12 +1,20 @@
 <?php
 
+use App\Models\AccountPayable;
+use App\Models\AccountReceivable;
 use App\Models\Company;
-use App\Models\Client;
+use App\Models\Customer;
+use App\Models\OrderService;
+use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Reseller;
+use App\Models\Sale;
 use App\Models\Service;
+use App\Models\StockMovement;
 use App\Models\User;
+use App\Models\Warranty;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+
 uses(RefreshDatabase::class);
 
 beforeEach(function (): void {
@@ -46,8 +54,15 @@ it('allows authorized users to access the api status endpoint', function () {
 it('seeds demo data for the initial setup', function () {
     expect(Company::count())->toBe(1)
         ->and(Reseller::count())->toBe(2)
-        ->and(Client::count())->toBe(5)
+        ->and(Customer::count())->toBe(5)
         ->and(User::count())->toBe(4)
         ->and(Product::count())->toBe(3)
-        ->and(Service::count())->toBe(3);
+        ->and(Service::count())->toBe(3)
+        ->and(OrderService::count())->toBe(2)
+        ->and(Sale::count())->toBe(2)
+        ->and(AccountReceivable::count())->toBe(2)
+        ->and(AccountPayable::count())->toBe(2)
+        ->and(StockMovement::count())->toBe(3)
+        ->and(Warranty::count())->toBe(2)
+        ->and(Payment::count())->toBe(4);
 });

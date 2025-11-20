@@ -31,10 +31,11 @@ Plataforma SaaS construída com Laravel 11 para gestão de ordens de serviço, P
    ```
 
 As seeds criam:
-- 1 empresa principal
-- 2 revendedores
-- 5 clientes vinculados
-- 3 produtos e 3 serviços de exemplo
+- 1 empresa principal com revendedores, clientes, contas a pagar/receber e garantias de exemplo
+- 2 revendedores vinculados
+- 5 clientes já relacionados à empresa e revendedores
+- 3 produtos (com estoque inicial) e 3 serviços ativos
+- 2 ordens de serviço, 2 vendas e movimentos financeiros associados
 - Usuários demo com perfis Administrador, Vendedor, Técnico e Financeiro
 
 Senhas padrão: `password` (alterar após o primeiro acesso).
@@ -55,8 +56,11 @@ Senhas padrão: `password` (alterar após o primeiro acesso).
 - `GET /` — página inicial (pública)
 - `GET /status` — requer autenticação HTTP Basic + permissão `view platform status`
 - `GET /api/status` — idem, expõe resposta JSON com timestamp
+- `GET /customers` — CRUD completo de clientes (RBAC `manage customers`)
+- `GET /products` — CRUD completo de produtos (RBAC `manage products`)
+- `GET /services` — CRUD completo de serviços (RBAC `manage services`)
 
-Use o usuário administrador (`admin@homstech.test` / `password`) para autenticar nas rotas protegidas.
+Use o usuário administrador (`admin@homstech.test` / `password`) para autenticar nas rotas protegidas ou associe permissões específicas aos demais perfis.
 
 ## Testes
 
@@ -69,7 +73,7 @@ ou
 ./vendor/bin/pest
 ```
 
-Os testes garantem o funcionamento das rotas de status e validam os dados semeados.
+Os testes garantem o funcionamento das rotas de status, validam os dados semeados e asseguram que apenas usuários autorizados acessam os CRUDs de clientes, produtos e serviços.
 
 ## Variáveis de ambiente
 

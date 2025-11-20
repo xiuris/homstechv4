@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Reseller extends Model
 {
+    /** @use HasFactory<\Database\Factories\ResellerFactory> */
     use HasFactory;
 
     protected $fillable = [
@@ -25,8 +26,23 @@ class Reseller extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function clients(): HasMany
+    public function customers(): HasMany
     {
-        return $this->hasMany(Client::class);
+        return $this->hasMany(Customer::class);
+    }
+
+    public function users(): HasMany
+    {
+        return $this->hasMany(User::class);
+    }
+
+    public function sales(): HasMany
+    {
+        return $this->hasMany(Sale::class);
+    }
+
+    public function accountsPayable(): HasMany
+    {
+        return $this->hasMany(AccountPayable::class);
     }
 }

@@ -24,9 +24,9 @@ class Company extends Model
         return $this->hasMany(Reseller::class);
     }
 
-    public function clients(): HasMany
+    public function customers(): HasMany
     {
-        return $this->hasMany(Client::class);
+        return $this->hasMany(Customer::class);
     }
 
     public function products(): HasMany
@@ -37,5 +37,35 @@ class Company extends Model
     public function services(): HasMany
     {
         return $this->hasMany(Service::class);
+    }
+
+    public function orderServices(): HasMany
+    {
+        return $this->hasMany(OrderService::class);
+    }
+
+    public function sales(): HasMany
+    {
+        return $this->hasMany(Sale::class);
+    }
+
+    public function stockMovements(): HasMany
+    {
+        return $this->hasMany(StockMovement::class);
+    }
+
+    public function accountsReceivable(): HasMany
+    {
+        return $this->hasMany(AccountReceivable::class);
+    }
+
+    public function accountsPayable(): HasMany
+    {
+        return $this->hasMany(AccountPayable::class);
+    }
+
+    public function warranties(): HasMany
+    {
+        return $this->hasMany(Warranty::class);
     }
 }
