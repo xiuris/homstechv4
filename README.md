@@ -63,6 +63,49 @@ Senhas padrão: `password` (alterar após o primeiro acesso).
   php artisan schedule:run
   ```
 
+## Deploy em Hostinger
+
+### Preparação
+- Apontar o domínio/subdomínio para a pasta `public/` (ou manter o `.htaccess` raiz que redireciona tudo para `public/`).
+- No painel, selecione PHP 8.2+ com extensões `fileinfo`, `mbstring` e `xml` habilitadas.
+- Crie o banco MySQL gerenciado e copie `DB_HOST`, `DB_USERNAME`, `DB_PASSWORD` e `DB_DATABASE` fornecidos pelo Hostinger.
+- Ajuste o `.env` (ou use o instalador) definindo `APP_URL=https://seu-dominio`, `FILESYSTEM_DISK=public`, `QUEUE_CONNECTION=database` e os dados do MySQL gerenciado.
+- Após o primeiro deploy, execute `php artisan storage:link` para expor uploads públicos (anexos, PDFs e impressões).
+
+### Passo a passo (Git/FTP)
+1. Envie o código via Git ou FTP para o diretório do site e mantenha o documento raiz apontando para `public/`.
+2. Rode as dependências em produção:
+   ```bash
+   composer install --no-dev --optimize-autoloader
+   npm install --omit=dev && npm run build # opcional, se quiser servir os assets minificados
+   ```
+3. Copie `.env.example` para `.env` e preencha APP_URL e credenciais MySQL do painel.
+4. Gere a chave de app caso não tenha sido criada pelo instalador:
+   ```bash
+   php artisan key:generate
+   ```
+5. Execute o script de deploy para cachear config/rotas/views, aplicar migrações com `--force`, recriar o link de storage e reiniciar a fila:
+   ```bash
+   ./scripts/deploy_hostinger.sh
+   ```
+
+### Cron/filas no Hostinger
+- **Agendador** (a cada minuto):
+  ```bash
+  * * * * * /usr/bin/php /home/SEU_USUARIO/domains/SEU_DOMINIO/public_html/artisan schedule:run >> /home/SEU_USUARIO/laravel-schedule.log 2>&1
+  ```
+- **Fila usando driver database** (refrescar a cada minuto):
+  ```bash
+  * * * * * /usr/bin/php /home/SEU_USUARIO/domains/SEU_DOMINIO/public_html/artisan queue:work --sleep=3 --tries=3 --max-time=3600 --stop-when-empty >> /home/SEU_USUARIO/laravel-queue.log 2>&1
+  ```
+
+### Checklist de deploy
+- APP_URL e SANCTUM_STATEFUL_DOMAINS apontando para o domínio final.
+- Credenciais do MySQL gerenciado aplicadas e migrações rodadas com sucesso (`php artisan migrate --force`).
+- Link simbólico de storage criado (`php artisan storage:link`) e disco padrão setado para `public`.
+- Cache de config/rotas/views atualizado (via `./scripts/deploy_hostinger.sh`).
+- Cron ativo para `schedule:run` e execução da fila em modo database.
+
 ### Rotas base
 
 - `GET /` — página inicial (pública)
