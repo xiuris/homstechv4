@@ -10,9 +10,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class FinanceReportExport implements FromCollection, WithHeadings
 {
-    public function __construct(private int $companyId)
-    {
-    }
+    public function __construct(private int $companyId) {}
 
     public function collection(): Collection
     {

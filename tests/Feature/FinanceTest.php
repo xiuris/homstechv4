@@ -3,7 +3,6 @@
 use App\Jobs\ProcessRecurringPayablesJob;
 use App\Models\AccountPayable;
 use App\Models\AccountReceivable;
-use App\Models\Sale;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Bus;
@@ -47,7 +46,7 @@ it('processes recurring payables and generates next period entry', function () {
         'due_date' => now()->subDay(),
     ]);
 
-    (new ProcessRecurringPayablesJob())->handle();
+    (new ProcessRecurringPayablesJob)->handle();
 
     $next = AccountPayable::where('id', '!=', $payable->id)->first();
     expect($next)->not->toBeNull()

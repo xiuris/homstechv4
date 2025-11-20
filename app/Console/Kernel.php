@@ -11,7 +11,7 @@ class Kernel extends ConsoleKernel
 {
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->job(new ExpireQuotationsJob())->daily();
-        $schedule->job(new ProcessRecurringPayablesJob())->daily();
+        $schedule->job(new ExpireQuotationsJob)->daily();
+        $schedule->job(new ProcessRecurringPayablesJob)->daily();
     }
 }

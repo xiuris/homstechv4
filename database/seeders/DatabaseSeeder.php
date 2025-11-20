@@ -6,6 +6,7 @@ use App\Models\AccountPayable;
 use App\Models\AccountReceivable;
 use App\Models\Company;
 use App\Models\Customer;
+use App\Models\FiscalDocument;
 use App\Models\OrderService;
 use App\Models\Product;
 use App\Models\Reseller;
@@ -40,6 +41,7 @@ class DatabaseSeeder extends Seeder
                 'manage sales',
                 'apply sale discount',
                 'manage finances',
+                'manage integrations',
                 'manage warranties',
                 'manage stock',
             ])->map(fn (string $name) => Permission::firstOrCreate([
@@ -56,6 +58,7 @@ class DatabaseSeeder extends Seeder
                     'manage services',
                     'manage sales',
                     'apply sale discount',
+                    'manage integrations',
                 ],
                 'Técnico' => [
                     'view platform status',
@@ -68,6 +71,7 @@ class DatabaseSeeder extends Seeder
                     'manage finances',
                     'manage customers',
                     'apply sale discount',
+                    'manage integrations',
                 ],
             ])->map(function (array $permissionNames, string $roleName) {
                 $role = Role::firstOrCreate([
@@ -480,6 +484,20 @@ class DatabaseSeeder extends Seeder
                     $warranty + ['company_id' => $company->id]
                 );
             }
+
+            FiscalDocument::updateOrCreate(
+                [
+                    'company_id' => $company->id,
+                    'document_type' => 'nfe',
+                    'uf' => 'MS',
+                ],
+                [
+                    'customer_id' => $customers[0]->id,
+                    'total' => 1200,
+                    'status' => 'pending',
+                    'scheduled_at' => now()->addMinutes(5),
+                ]
+            );
         });
     }
 }

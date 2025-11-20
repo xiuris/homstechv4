@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\AccountPayable;
 use App\Models\AccountReceivable;
 use App\Models\Customer;
+use App\Models\FiscalDocument;
 use App\Models\OrderService;
 use App\Models\Product;
 use App\Models\Sale;
@@ -14,6 +15,7 @@ use App\Models\Warranty;
 use App\Policies\AccountPayablePolicy;
 use App\Policies\AccountReceivablePolicy;
 use App\Policies\CustomerPolicy;
+use App\Policies\FiscalDocumentPolicy;
 use App\Policies\OrderServicePolicy;
 use App\Policies\ProductPolicy;
 use App\Policies\SalePolicy;
@@ -39,6 +41,7 @@ class AuthServiceProvider extends ServiceProvider
         AccountPayable::class => AccountPayablePolicy::class,
         Warranty::class => WarrantyPolicy::class,
         StockMovement::class => StockMovementPolicy::class,
+        FiscalDocument::class => FiscalDocumentPolicy::class,
     ];
 
     /**

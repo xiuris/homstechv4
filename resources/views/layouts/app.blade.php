@@ -19,6 +19,9 @@
                 <li class="nav-item"><a class="nav-link" href="{{ route('products.index') }}">Produtos</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('services.index') }}">Serviços</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('pos.create') }}">PDV</a></li>
+                @can('manage integrations')
+                    <li class="nav-item"><a class="nav-link" href="{{ route('fiscal-documents.index') }}">Fiscal</a></li>
+                @endcan
             </ul>
         </div>
     </div>

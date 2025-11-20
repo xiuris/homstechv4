@@ -20,6 +20,10 @@ return [
 
     'whatsapp' => [
         'token' => env('WHATSAPP_TOKEN'),
+        'phone_id' => env('WHATSAPP_PHONE_ID'),
+        'base_url' => env('WHATSAPP_BASE_URL', 'https://graph.facebook.com/v20.0'),
+        'retries' => env('WHATSAPP_RETRIES', 3),
+        'backoff_ms' => env('WHATSAPP_BACKOFF', 200),
     ],
 
     'ses' => [

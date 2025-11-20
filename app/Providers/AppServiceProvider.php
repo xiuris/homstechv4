@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Services\Contracts\WhatsAppService;
+use App\Services\WhatsApp\CloudWhatsAppService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,7 +13,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(WhatsAppService::class, CloudWhatsAppService::class);
     }
 
     /**

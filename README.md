@@ -37,6 +37,7 @@ As seeds criam:
 - 5 clientes já relacionados à empresa e revendedores
 - 3 produtos (com estoque inicial) e 3 serviços ativos
 - 2 ordens de serviço, 2 vendas e movimentos financeiros associados
+- 1 documento fiscal pendente para simulação de emissão
 - Usuários demo com perfis Administrador, Vendedor, Técnico e Financeiro
 
 Senhas padrão: `password` (alterar após o primeiro acesso).
@@ -64,6 +65,7 @@ Senhas padrão: `password` (alterar após o primeiro acesso).
 - `GET /customers` — CRUD completo de clientes (RBAC `manage customers`)
 - `GET /products` — CRUD completo de produtos (RBAC `manage products`)
 - `GET /services` — CRUD completo de serviços (RBAC `manage services`)
+- `GET /fiscal-documents` — status e reimpressão de documentos fiscais simulados (RBAC `manage integrations`)
 
 Use o usuário administrador (`admin@homstech.test` / `password`) para autenticar nas rotas protegidas ou associe permissões específicas aos demais perfis.
 
@@ -92,6 +94,8 @@ Principais variáveis do `.env`:
 | `CACHE_STORE`, `QUEUE_CONNECTION`, `SESSION_DRIVER` | Drivers padrão para cache, fila e sessão |
 | `MAIL_*` | Configuração do transporte de e-mails |
 | `SANCTUM_STATEFUL_DOMAINS`, `SESSION_DOMAIN` | Domínios confiáveis para autenticação baseada em cookie |
+| `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_ID`, `WHATSAPP_BASE_URL`, `WHATSAPP_RETRIES`, `WHATSAPP_BACKOFF` | Credenciais da Cloud API e parâmetros de retry/log para envio de mensagens |
+| `FISCAL_DRIVER` | Driver de emissão fiscal (mock padrão) |
 
 ## Contribuição
 

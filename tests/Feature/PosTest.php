@@ -16,7 +16,7 @@ it('expires quotations after scheduler runs', function () {
         'expires_at' => now()->subDay(),
     ]);
 
-    (new ExpireQuotationsJob())->handle();
+    (new ExpireQuotationsJob)->handle();
 
     expect($sale->fresh()->status)->toBe('expired');
 });

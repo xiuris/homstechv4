@@ -49,7 +49,7 @@ class PosController extends Controller
             'receivable_installments' => ['nullable', 'integer', 'min:1', 'max:12'],
         ]);
 
-        if (($validated['discount_total'] ?? 0) > 0 && !Auth::user()->can('apply sale discount')) {
+        if (($validated['discount_total'] ?? 0) > 0 && ! Auth::user()->can('apply sale discount')) {
             abort(403, 'Você não tem permissão para aplicar descontos.');
         }
 
@@ -59,6 +59,7 @@ class PosController extends Controller
                 $price = $validated['pricing_mode'] === 'wholesale'
                     ? ($product->wholesale_price ?? $product->retail_price)
                     : $product->retail_price;
+
                 return [
                     'product_id' => $product->id,
                     'service_id' => null,
@@ -185,7 +186,7 @@ class PosController extends Controller
 
             $product = $item['product'] ?? Product::find($item['product_id']);
 
-            if (!$product) {
+            if (! $product) {
                 continue;
             }
 

@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\AccountPayableController;
 use App\Http\Controllers\AccountReceivableController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\FiscalDocumentController;
 use App\Http\Controllers\PosController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReportController;
@@ -32,4 +33,11 @@ Route::middleware(['auth.basic'])->group(function () {
     Route::post('pos', [PosController::class, 'store'])->name('pos.store')->middleware('permission:manage sales');
     Route::get('pos/{sale}', [PosController::class, 'show'])->name('pos.show')->middleware('permission:manage sales');
     Route::post('pos/{sale}/complete', [PosController::class, 'complete'])->name('pos.complete')->middleware('permission:manage sales');
+
+    Route::get('fiscal-documents', [FiscalDocumentController::class, 'index'])->name('fiscal-documents.index')->middleware('permission:manage integrations');
+    Route::get('fiscal-documents/create', [FiscalDocumentController::class, 'create'])->name('fiscal-documents.create')->middleware('permission:manage integrations');
+    Route::post('fiscal-documents', [FiscalDocumentController::class, 'store'])->name('fiscal-documents.store')->middleware('permission:manage integrations');
+    Route::get('fiscal-documents/{fiscalDocument}', [FiscalDocumentController::class, 'show'])->name('fiscal-documents.show')->middleware('permission:manage integrations');
+    Route::get('fiscal-documents/{fiscalDocument}/xml', [FiscalDocumentController::class, 'downloadXml'])->name('fiscal-documents.download.xml')->middleware('permission:manage integrations');
+    Route::get('fiscal-documents/{fiscalDocument}/pdf', [FiscalDocumentController::class, 'downloadPdf'])->name('fiscal-documents.download.pdf')->middleware('permission:manage integrations');
 });

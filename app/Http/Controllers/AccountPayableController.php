@@ -9,7 +9,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Storage;
 
 class AccountPayableController extends Controller
 {
@@ -70,7 +69,7 @@ class AccountPayableController extends Controller
         ]);
 
         if ($payable->is_recurring) {
-            Bus::dispatch(new ProcessRecurringPayablesJob());
+            Bus::dispatch(new ProcessRecurringPayablesJob);
         }
 
         return redirect()->route('payables.index');
