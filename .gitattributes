@@ -1,6 +1,11 @@
 * text=auto eol=lf
-*.sh text eol=lf
-*.bat text eol=crlf
+
+*.blade.php diff=html
+*.css diff=css
+*.html diff=html
 *.md diff=markdown
-*.lock -diff
-*.min.* -diff
+*.php diff=php
+
+/.github export-ignore
+CHANGELOG.md export-ignore
+.styleci.yml export-ignore
