@@ -14,11 +14,27 @@ return new class extends Migration
             $table->foreignId('customer_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('reseller_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+ codex/create-laravel-11-project-with-base-routes
             $table->string('status')->default('draft');
+=======
+ codex/create-laravel-11-project-with-base-routes-00l5fh
+            $table->string('status')->default('quotation');
+=======
+            $table->string('status')->default('draft');
+ main
+ main
             $table->decimal('subtotal', 12, 2)->default(0);
             $table->decimal('discount_total', 12, 2)->default(0);
             $table->decimal('total', 12, 2)->default(0);
             $table->timestamp('sold_at')->nullable();
+ codex/create-laravel-11-project-with-base-routes
+=======
+ codex/create-laravel-11-project-with-base-routes-00l5fh
+            $table->timestamp('expires_at')->nullable();
+            $table->timestamp('stock_processed_at')->nullable();
+=======
+ main
+ main
             $table->timestamps();
         });
     }

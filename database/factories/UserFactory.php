@@ -2,6 +2,13 @@
 
 namespace Database\Factories;
 
+ codex/create-laravel-11-project-with-base-routes
+=======
+ codex/create-laravel-11-project-with-base-routes-00l5fh
+use App\Models\Company;
+=======
+ main
+ main
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -24,7 +31,15 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
+ codex/create-laravel-11-project-with-base-routes
             'company_id' => null,
+=======
+ codex/create-laravel-11-project-with-base-routes-00l5fh
+            'company_id' => Company::factory(),
+=======
+            'company_id' => null,
+ main
+ main
             'reseller_id' => null,
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
