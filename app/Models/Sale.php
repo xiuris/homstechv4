@@ -23,10 +23,13 @@ class Sale extends Model
         'discount_total',
         'total',
         'sold_at',
+ codex/create-laravel-11-project-with-base-routes
+=======
  codex/create-laravel-11-project-with-base-routes-00l5fh
         'expires_at',
         'stock_processed_at',
 =======
+ main
  main
     ];
 
@@ -35,10 +38,13 @@ class Sale extends Model
         'discount_total' => 'decimal:2',
         'total' => 'decimal:2',
         'sold_at' => 'datetime',
+ codex/create-laravel-11-project-with-base-routes
+=======
  codex/create-laravel-11-project-with-base-routes-00l5fh
         'expires_at' => 'datetime',
         'stock_processed_at' => 'datetime',
 =======
+ main
  main
     ];
 
@@ -76,6 +82,8 @@ class Sale extends Model
     {
         return $this->morphMany(Payment::class, 'payable');
     }
+ codex/create-laravel-11-project-with-base-routes
+=======
  codex/create-laravel-11-project-with-base-routes-00l5fh
 
     public function items(): HasMany
@@ -83,5 +91,6 @@ class Sale extends Model
         return $this->hasMany(SaleItem::class);
     }
 =======
+ main
  main
 }
