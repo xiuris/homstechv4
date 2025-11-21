@@ -40,7 +40,7 @@ it('enforces product permissions on index route', function () {
         ->get(route('products.index'))
         ->assertForbidden();
 
-    $authorized = User::whereEmail('vendas@homstech.test')->firstOrFail();
+    $authorized = User::whereEmail('admin@homstech.test')->firstOrFail();
     expect($authorized->can('manage products'))->toBeTrue();
 
     $this->actingAs($authorized)
@@ -59,7 +59,7 @@ it('enforces service permissions on index route', function () {
         ->get(route('services.index'))
         ->assertForbidden();
 
-    $authorized = User::whereEmail('vendas@homstech.test')->firstOrFail();
+    $authorized = User::whereEmail('admin@homstech.test')->firstOrFail();
     expect($authorized->can('manage services'))->toBeTrue();
 
     $this->actingAs($authorized)

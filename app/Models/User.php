@@ -31,6 +31,7 @@ class User extends Authenticatable
         'password',
         'phone',
         'document',
+        'discount_limit_percent',
     ];
 
     /**
@@ -53,6 +54,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'discount_limit_percent' => 'decimal:2',
         ];
     }
 

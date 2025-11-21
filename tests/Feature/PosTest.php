@@ -26,7 +26,9 @@ it('expires quotations after scheduler runs', function () {
 
 it('registers sale with two payment methods and reduces stock', function () {
     $product = Product::factory()->create(['stock' => 10]);
-    $user = User::factory()->create()->givePermissionTo('manage sales', 'apply sale discount');
+    $user = User::factory()->create([
+        'discount_limit_percent' => 20,
+    ])->givePermissionTo('manage sales', 'apply sale discount');
 
     $response = $this->actingAs($user)
         ->post(route('pos.store'), [
@@ -53,6 +55,28 @@ it('registers sale with two payment methods and reduces stock', function () {
 
     expect($product->stock)->toBe(8);
     expect(StockMovement::where('product_id', $product->id)->where('reference_id', $sale->id)->exists())->toBeTrue();
+});
+
+it('respects the user discount limit when applying discounts', function () {
+    $product = Product::factory()->create(['stock' => 5]);
+
+    $user = User::factory()->create([
+        'discount_limit_percent' => 5,
+    ])->givePermissionTo('manage sales', 'apply sale discount');
+
+    $response = $this->actingAs($user)->post(route('pos.store'), [
+        'mode' => 'sale',
+        'pricing_mode' => 'retail',
+        'discount_total' => $product->retail_price * 0.2,
+        'items' => [
+            ['item_type' => 'product', 'item_id' => $product->id, 'quantity' => 1, 'discount' => 0],
+        ],
+        'payments' => [
+            ['method' => 'cash', 'amount' => $product->retail_price],
+        ],
+    ]);
+
+    $response->assertSessionHasErrors(['discount_total']);
 });
 
 it('blocks discount without permission', function () {

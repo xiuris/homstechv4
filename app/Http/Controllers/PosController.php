@@ -87,6 +87,23 @@ class PosController extends Controller
 
         $subtotal = $items->sum(fn ($item) => $item['unit_price'] * $item['quantity']);
         $discount = ($validated['discount_total'] ?? 0) + $items->sum(fn ($item) => $item['discount']);
+
+        $userDiscountLimit = Auth::user()->discount_limit_percent ?? 0;
+
+        if ($discount > 0 && $subtotal > 0) {
+            $maxDiscount = $subtotal * ($userDiscountLimit / 100);
+
+            if ($discount > $maxDiscount) {
+                throw ValidationException::withMessages([
+                    'discount_total' => sprintf(
+                        'Seu limite de desconto é de %.2f%%. Desconto máximo permitido: R$ %.2f.',
+                        $userDiscountLimit,
+                        $maxDiscount
+                    ),
+                ]);
+            }
+        }
+
         $total = max($subtotal - $discount, 0);
 
         $sale = Sale::create([

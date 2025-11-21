@@ -2,7 +2,7 @@
     <div class="sidebar-brand">
         <span class="brand-mark">H</span>
         <div>
-            <div class="brand-title">Homstech OS</div>
+            <div class="brand-title">{{ config('app.name') }}</div>
             <small class="text-muted">Operações & Serviços</small>
         </div>
     </div>

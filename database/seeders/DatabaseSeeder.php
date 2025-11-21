@@ -37,6 +37,7 @@ class DatabaseSeeder extends Seeder
             $permissions = collect([
                 'view platform status',
                 'manage customers',
+                'manage resellers',
                 'manage products',
                 'manage services',
                 'manage order services',
@@ -59,12 +60,10 @@ class DatabaseSeeder extends Seeder
                 'Vendedor' => [
                     'view platform status',
                     'manage customers',
-                    'manage products',
-                    'manage services',
+                    'manage resellers',
                     'manage sales',
                     'apply sale discount',
                     'pdv.invoice_os',
-                    'manage integrations',
                 ],
                 'Técnico' => [
                     'view platform status',
@@ -77,9 +76,7 @@ class DatabaseSeeder extends Seeder
                     'view platform status',
                     'manage finances',
                     'manage customers',
-                    'apply sale discount',
-                    'manage integrations',
-                    'manage alerts',
+                    'manage order services',
                 ],
             ])->map(function (array $permissionNames, string $roleName) {
                 $role = Role::firstOrCreate([
@@ -271,6 +268,7 @@ class DatabaseSeeder extends Seeder
                     'phone' => '+55 11 90000-0001',
                     'role' => 'Administrador',
                     'reseller_id' => null,
+                    'discount_limit_percent' => 100,
                 ],
                 [
                     'name' => 'Bruno Vendas',
@@ -279,6 +277,7 @@ class DatabaseSeeder extends Seeder
                     'phone' => '+55 11 90000-0002',
                     'role' => 'Vendedor',
                     'reseller_id' => $resellers[0]->id,
+                    'discount_limit_percent' => 15,
                 ],
                 [
                     'name' => 'Carla Técnica',
@@ -287,6 +286,7 @@ class DatabaseSeeder extends Seeder
                     'phone' => '+55 11 90000-0003',
                     'role' => 'Técnico',
                     'reseller_id' => null,
+                    'discount_limit_percent' => 0,
                 ],
                 [
                     'name' => 'Diego Financeiro',
@@ -295,6 +295,7 @@ class DatabaseSeeder extends Seeder
                     'phone' => '+55 11 90000-0004',
                     'role' => 'Financeiro',
                     'reseller_id' => null,
+                    'discount_limit_percent' => 5,
                 ],
             ])->map(function (array $userData) use ($company, $roles) {
                 $user = User::updateOrCreate(
@@ -306,6 +307,7 @@ class DatabaseSeeder extends Seeder
                         'document' => $userData['document'],
                         'phone' => $userData['phone'],
                         'password' => Hash::make('password'),
+                        'discount_limit_percent' => $userData['discount_limit_percent'],
                     ]
                 );
 

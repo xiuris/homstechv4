@@ -34,6 +34,7 @@ class UserFactory extends Factory
             'phone' => fake()->e164PhoneNumber(),
             'document' => fake()->unique()->numerify('###########'),
             'remember_token' => Str::random(10),
+            'discount_limit_percent' => 100,
         ];
     }
 

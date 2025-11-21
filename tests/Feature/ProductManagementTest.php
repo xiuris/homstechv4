@@ -17,7 +17,7 @@ it('retains the product activation flag when the request omits the checkbox valu
         'is_active' => true,
     ]);
 
-    $authorized = User::whereEmail('vendas@homstech.test')->firstOrFail();
+    $authorized = User::whereEmail('admin@homstech.test')->firstOrFail();
 
     $payload = [
         'name' => 'Produto Atualizado',
@@ -46,7 +46,7 @@ it('allows deactivating a product via the form checkbox', function () {
         'is_active' => true,
     ]);
 
-    $authorized = User::whereEmail('vendas@homstech.test')->firstOrFail();
+    $authorized = User::whereEmail('admin@homstech.test')->firstOrFail();
 
     $payload = [
         'name' => 'Produto Desativado',

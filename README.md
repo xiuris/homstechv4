@@ -1,4 +1,4 @@
-# Homstech OS Suite
+# Homstech OS
 
 Plataforma SaaS construída com Laravel 11 para gestão de ordens de serviço, PDV, clientes/revendedores, financeiro e integrações (WhatsApp, NF-e/NFC-e). O objetivo é disponibilizar uma base sólida com autenticação, perfis RBAC (Spatie Permission), dados de demonstração e testes automatizados com Pest.
 
