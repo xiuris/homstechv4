@@ -46,6 +46,9 @@ Route::middleware(['auth.basic'])->group(function () {
     Route::post('pos', [PosController::class, 'store'])->name('pos.store')->middleware('permission:manage sales');
     Route::get('pos/{sale}', [PosController::class, 'show'])->name('pos.show')->middleware('permission:manage sales');
     Route::post('pos/{sale}/complete', [PosController::class, 'complete'])->name('pos.complete')->middleware('permission:manage sales');
+    Route::get('pos/order-services/search', [PosController::class, 'orderServices'])
+        ->name('pos.order-services.search')
+        ->middleware(['permission:manage sales', 'permission:pdv.invoice_os']);
 
     Route::get('fiscal-documents', [FiscalDocumentController::class, 'index'])->name('fiscal-documents.index')->middleware('permission:manage integrations');
     Route::get('fiscal-documents/create', [FiscalDocumentController::class, 'create'])->name('fiscal-documents.create')->middleware('permission:manage integrations');

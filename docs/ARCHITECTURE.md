@@ -34,6 +34,7 @@ Principais observações:
 - **Clientes**: `Customer` centraliza dados cadastrais, relação com `Reseller` e possui vínculos com ordens de serviço, vendas, contas a receber e garantias.
 - **Catálogo**: `Product` mantém preços de varejo/atacado, controle de estoque e categoria. `Service` guarda categoria, duração e status de ativação.
 - **Operações**: `OrderService` e `Sale` representam ordens de serviço e vendas, respectivamente. Ambos alimentam `AccountReceivable`, `Warranty` e podem originar `Payment` através da relação polimórfica `payable`.
+- **Faturamento de OS via PDV**: o PDV permite importar ordens de serviço aprovadas/prontas para faturar (`pdv.invoice_os`) e cria uma `Sale` vinculada (`order_service_id`), replicando itens e cliente. Os pagamentos e parcelas geradas carregam a referência da OS e o status é marcado como `invoiced` para impedir faturamentos duplicados.
 - **Financeiro**: `AccountReceivable` e `AccountPayable` representam títulos a receber/pagar por empresa. Pagamentos são registrados via `Payment` (morph), permitindo associação a recebíveis, pagáveis ou outras entidades futuras. Recebíveis armazenam parcela/número total e preferências de notificação; pagáveis suportam recorrência (semanal/mensal), categoria e anexos de comprovantes.
 - **Estoque e Garantias**: Movimentações de estoque são rastreadas em `StockMovement`, vinculadas a produtos e usuários responsáveis. Garantias (`Warranty`) podem se relacionar tanto a vendas quanto a ordens de serviço.
 

@@ -25,7 +25,7 @@ class OrderServiceFactory extends Factory
             'assigned_user_id' => null,
             'title' => fake()->sentence(4),
             'description' => fake()->paragraph(),
-            'status' => fake()->randomElement(['open', 'in_progress', 'closed']),
+            'status' => fake()->randomElement(['open', 'in_progress', 'approved', 'ready_to_invoice']),
             'priority' => fake()->randomElement(['low', 'normal', 'high']),
             'total_value' => fake()->randomFloat(2, 100, 3000),
             'opened_at' => now(),

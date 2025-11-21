@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class OrderService extends Model
 {
@@ -25,12 +26,14 @@ class OrderService extends Model
         'total_value',
         'opened_at',
         'closed_at',
+        'invoiced_at',
     ];
 
     protected $casts = [
         'total_value' => 'decimal:2',
         'opened_at' => 'datetime',
         'closed_at' => 'datetime',
+        'invoiced_at' => 'datetime',
     ];
 
     public function company(): BelongsTo
@@ -66,5 +69,15 @@ class OrderService extends Model
     public function payments(): MorphMany
     {
         return $this->morphMany(Payment::class, 'payable');
+    }
+
+    public function items(): HasMany
+    {
+        return $this->hasMany(OrderServiceItem::class);
+    }
+
+    public function sale(): HasOne
+    {
+        return $this->hasOne(Sale::class);
     }
 }

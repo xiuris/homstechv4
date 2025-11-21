@@ -42,6 +42,7 @@ class DatabaseSeeder extends Seeder
                 'manage order services',
                 'manage sales',
                 'apply sale discount',
+                'pdv.invoice_os',
                 'manage finances',
                 'manage integrations',
                 'manage warranties',
@@ -62,6 +63,7 @@ class DatabaseSeeder extends Seeder
                     'manage services',
                     'manage sales',
                     'apply sale discount',
+                    'pdv.invoice_os',
                     'manage integrations',
                 ],
                 'Técnico' => [
@@ -337,7 +339,7 @@ class DatabaseSeeder extends Seeder
                     'customer_id' => $customers[0]->id,
                     'title' => 'Implantação completa PDV',
                     'description' => 'Configuração inicial, treinamento e checklist fiscal.',
-                    'status' => 'in_progress',
+                    'status' => 'approved',
                     'priority' => 'high',
                     'total_value' => 1899.90,
                     'opened_at' => now()->subDays(5),
@@ -346,7 +348,7 @@ class DatabaseSeeder extends Seeder
                     'customer_id' => $customers[3]->id,
                     'title' => 'Suporte remoto emergencial',
                     'description' => 'Correção de falha em emissor NFC-e.',
-                    'status' => 'open',
+                    'status' => 'ready_to_invoice',
                     'priority' => 'normal',
                     'total_value' => 299.90,
                     'opened_at' => now()->subDay(),
@@ -361,6 +363,29 @@ class DatabaseSeeder extends Seeder
                     'assigned_user_id' => $users[2]->id,
                 ]
             ));
+
+            foreach ($orderServices as $index => $orderService) {
+                $orderService->items()->delete();
+
+                $orderService->items()->createMany([
+                    [
+                        'item_type' => 'service',
+                        'service_id' => $services[$index % $services->count()]->id,
+                        'quantity' => 1,
+                        'unit_price' => $services[$index % $services->count()]->price,
+                        'discount' => 0,
+                        'total' => $services[$index % $services->count()]->price,
+                    ],
+                    [
+                        'item_type' => 'product',
+                        'product_id' => $products[$index % $products->count()]->id,
+                        'quantity' => 1,
+                        'unit_price' => $products[$index % $products->count()]->retail_price,
+                        'discount' => 0,
+                        'total' => $products[$index % $products->count()]->retail_price,
+                    ],
+                ]);
+            }
 
             $sales = [
                 [

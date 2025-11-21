@@ -18,6 +18,7 @@ class Sale extends Model
         'customer_id',
         'reseller_id',
         'user_id',
+        'order_service_id',
         'status',
         'subtotal',
         'discount_total',
@@ -54,6 +55,11 @@ class Sale extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function orderService(): BelongsTo
+    {
+        return $this->belongsTo(OrderService::class);
     }
 
     public function accountsReceivable(): HasMany

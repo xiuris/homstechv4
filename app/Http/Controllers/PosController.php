@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AccountReceivable;
+use App\Models\OrderService;
 use App\Models\Product;
 use App\Models\Sale;
 use App\Models\Service;
@@ -12,6 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class PosController extends Controller
 {
@@ -38,7 +40,7 @@ class PosController extends Controller
             'mode' => ['required', 'in:quotation,sale'],
             'pricing_mode' => ['required', 'in:retail,wholesale'],
             'discount_total' => ['nullable', 'numeric', 'min:0'],
-            'items' => ['required', 'array', 'min:1'],
+            'items' => ['required_without:order_service_id', 'array', 'min:1'],
             'items.*.item_type' => ['required', 'in:product,service'],
             'items.*.item_id' => ['required', 'integer'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],
@@ -47,43 +49,41 @@ class PosController extends Controller
             'payments.*.method' => ['required_with:payments', 'string'],
             'payments.*.amount' => ['required_with:payments', 'numeric', 'min:0.01'],
             'receivable_installments' => ['nullable', 'integer', 'min:1', 'max:12'],
+            'order_service_id' => ['nullable', 'exists:order_services,id'],
         ]);
 
         if (($validated['discount_total'] ?? 0) > 0 && ! Auth::user()->can('apply sale discount')) {
             abort(403, 'Você não tem permissão para aplicar descontos.');
         }
 
-        $items = collect($validated['items'])->map(function (array $item) use ($validated) {
-            if ($item['item_type'] === 'product') {
-                $product = Product::findOrFail($item['item_id']);
-                $price = $validated['pricing_mode'] === 'wholesale'
-                    ? ($product->wholesale_price ?? $product->retail_price)
-                    : $product->retail_price;
+        $orderService = null;
 
-                return [
-                    'product_id' => $product->id,
-                    'service_id' => null,
-                    'item_type' => 'product',
-                    'quantity' => $item['quantity'],
-                    'unit_price' => $price,
-                    'discount' => $item['discount'] ?? 0,
-                    'total' => ($price * $item['quantity']) - ($item['discount'] ?? 0),
-                    'product' => $product,
-                ];
+        if ($validated['order_service_id'] ?? false) {
+            abort_unless(Auth::user()->can('pdv.invoice_os'), 403);
+
+            $orderService = OrderService::with(['items.product', 'items.service', 'customer'])
+                ->where('company_id', Auth::user()->company_id)
+                ->findOrFail($validated['order_service_id']);
+
+            $validated['mode'] = 'sale';
+            $validated['customer_id'] = $orderService->customer_id;
+
+            if (in_array($orderService->status, ['invoiced', 'faturada'], true) || $orderService->invoiced_at || $orderService->sale) {
+                throw ValidationException::withMessages([
+                    'order_service_id' => 'Esta OS já foi faturada.',
+                ]);
             }
 
-            $service = Service::findOrFail($item['item_id']);
+            if (! in_array($orderService->status, ['approved', 'ready_to_invoice', 'aprovada', 'pronta_para_faturar'], true)) {
+                throw ValidationException::withMessages([
+                    'order_service_id' => 'Apenas OS aprovadas ou prontas para faturar podem ser importadas.',
+                ]);
+            }
+        }
 
-            return [
-                'product_id' => null,
-                'service_id' => $service->id,
-                'item_type' => 'service',
-                'quantity' => $item['quantity'],
-                'unit_price' => $service->price,
-                'discount' => $item['discount'] ?? 0,
-                'total' => ($service->price * $item['quantity']) - ($item['discount'] ?? 0),
-            ];
-        });
+        $items = $orderService
+            ? $this->mapOrderServiceItems($orderService)
+            : $this->mapRequestItems($validated);
 
         $subtotal = $items->sum(fn ($item) => $item['unit_price'] * $item['quantity']);
         $discount = ($validated['discount_total'] ?? 0) + $items->sum(fn ($item) => $item['discount']);
@@ -91,10 +91,11 @@ class PosController extends Controller
 
         $sale = Sale::create([
             'company_id' => Auth::user()->company_id,
-            'customer_id' => Arr::get($validated, 'customer_id'),
+            'customer_id' => $orderService?->customer_id ?? Arr::get($validated, 'customer_id'),
             'reseller_id' => Arr::get($validated, 'reseller_id'),
             'user_id' => Auth::id(),
-            'status' => $validated['mode'] === 'sale' ? 'completed' : 'quotation',
+            'order_service_id' => $orderService?->id,
+            'status' => ($validated['mode'] ?? 'sale') === 'sale' ? 'completed' : 'quotation',
             'subtotal' => $subtotal,
             'discount_total' => $discount,
             'total' => $total,
@@ -106,9 +107,17 @@ class PosController extends Controller
 
         $installments = $validated['receivable_installments'] ?? 1;
 
-        if ($validated['mode'] === 'sale') {
+        if (($validated['mode'] ?? 'sale') === 'sale') {
             $this->processPayments($sale, $validated['payments'] ?? [['method' => 'cash', 'amount' => $total]], $installments);
             $this->applyStockMovements($sale, $items);
+        }
+
+        if ($orderService && ($validated['mode'] ?? 'sale') === 'sale') {
+            $orderService->update([
+                'status' => 'invoiced',
+                'invoiced_at' => now(),
+                'closed_at' => now(),
+            ]);
         }
 
         return redirect()->route('pos.show', $sale);
@@ -153,6 +162,7 @@ class PosController extends Controller
                 AccountReceivable::create([
                     'company_id' => $sale->company_id,
                     'sale_id' => $sale->id,
+                    'order_service_id' => $sale->order_service_id,
                     'customer_id' => $sale->customer_id,
                     'amount' => ($sale->total - $totalAmount) / $installments,
                     'status' => 'pending',
@@ -206,5 +216,93 @@ class PosController extends Controller
         }
 
         $sale->update(['stock_processed_at' => now()]);
+    }
+
+    public function orderServices(Request $request)
+    {
+        abort_unless(Auth::user()->can('pdv.invoice_os'), 403);
+
+        $query = OrderService::with(['customer', 'items.product', 'items.service'])
+            ->where('company_id', Auth::user()->company_id)
+            ->whereIn('status', ['approved', 'ready_to_invoice', 'aprovada', 'pronta_para_faturar']);
+
+        if ($request->filled('number')) {
+            $query->where('id', $request->integer('number'));
+        }
+
+        if ($request->filled('customer')) {
+            $query->whereHas('customer', fn ($q) => $q->where('name', 'like', '%' . $request->customer . '%'));
+        }
+
+        if ($request->filled('opened_at')) {
+            $query->whereDate('opened_at', $request->date('opened_at'));
+        }
+
+        $orderServices = $query->orderByDesc('id')->paginate(5);
+
+        return response()->json($orderServices);
+    }
+
+    protected function mapOrderServiceItems(OrderService $orderService)
+    {
+        return $orderService->items->map(function ($item) {
+            if ($item->item_type === 'product' && $item->product) {
+                return [
+                    'product_id' => $item->product_id,
+                    'service_id' => null,
+                    'item_type' => 'product',
+                    'quantity' => $item->quantity,
+                    'unit_price' => $item->unit_price,
+                    'discount' => $item->discount ?? 0,
+                    'total' => $item->total,
+                    'product' => $item->product,
+                ];
+            }
+
+            return [
+                'product_id' => null,
+                'service_id' => $item->service_id,
+                'item_type' => 'service',
+                'quantity' => $item->quantity,
+                'unit_price' => $item->unit_price,
+                'discount' => $item->discount ?? 0,
+                'total' => $item->total,
+            ];
+        });
+    }
+
+    protected function mapRequestItems(array $validated)
+    {
+        return collect($validated['items'])->map(function (array $item) use ($validated) {
+            if ($item['item_type'] === 'product') {
+                $product = Product::findOrFail($item['item_id']);
+                $price = $validated['pricing_mode'] === 'wholesale'
+                    ? ($product->wholesale_price ?? $product->retail_price)
+                    : $product->retail_price;
+
+                return [
+                    'product_id' => $product->id,
+                    'service_id' => null,
+                    'item_type' => 'product',
+                    'quantity' => $item['quantity'],
+                    'unit_price' => $price,
+                    'discount' => $item['discount'] ?? 0,
+                    'total' => ($price * $item['quantity']) - ($item['discount'] ?? 0),
+                    'product' => $product,
+                ];
+            }
+
+            $service = Service::findOrFail($item['item_id']);
+
+            return [
+                'product_id' => null,
+                'service_id' => $service->id,
+                'item_type' => 'service',
+                'quantity' => $item['quantity'],
+                'unit_price' => $service->price,
+                'discount' => $item['discount'] ?? 0,
+                'total' => ($service->price * $item['quantity']) - ($item['discount'] ?? 0),
+            ];
+        });
     }
 }
